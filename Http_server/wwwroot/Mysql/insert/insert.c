@@ -5,9 +5,44 @@
 #include<mysql/mysql.h>
 #include"url_m.hpp"
 #include"cgi_base.hpp"
+#include<sys/types.h>
+#include<regex.h>
+
 
 /*/mysql/insert/insert/index.html?id=12344&name=毛&sex=女&number=12345678902&math=99&chinese=99&english=99*/
 
+void my_lltoa(char id[],unsigned long long name){
+  sprintf(id,"%llu",name);
+}
+
+
+
+void my_itoa(char id[],int name){
+  sprintf(id,"%d",name);
+}
+
+
+int my_match(char* pattern,char* buf){
+  int status,i;
+  int flag=REG_EXTENDED;
+  regmatch_t pmatch[1];
+  const size_t nmatch=1;
+  regex_t  reg;
+  //编译正则模式
+  regcomp(&reg,pattern,flag);
+  //执行正则表达式和缓存的比较
+  status=regexec(&reg,buf,nmatch,pmatch,0);
+  //打印匹配的字符串
+  /**********************DEBUG***************************/
+  fprintf(stderr,"匹配的字符串：");
+  for(i=pmatch[0].rm_so;i<pmatch[0].rm_eo;++i){
+    fprintf(stderr,"%c",buf[i]);
+  }
+  fprintf(stderr,"\n");
+  /*******************************************************/ 
+  regfree(&reg);
+  return status;
+}
 
 
 //写成功的网页
@@ -125,6 +160,80 @@ int main(){
   fprintf(stderr,"id=%llu,name=%s,sex=%s,number=%llu,math=%d,chinese=%d,english=%d\n",id,name,sex,number,math,chinese,english);
   /******************************/
   
+  //判断各项是否符合规则
+  
+  //id
+  char id_s[6]={0};
+  char pattern_id[128]="^[1-9][0-9]{4}$";
+  int status_id=0;
+  my_lltoa(id_s,id);
+  status_id=my_match(pattern_id,id_s);
+  if(status_id == REG_NOMATCH){
+    char Res[256]="<h3>输入ID错误，请返回主页面，重新输入首位非0的5位整数</h3>";
+    RenderHtml(Res);
+    return 1;
+  }
+
+  //name
+  fprintf(stderr,"pattern_name will going\n");
+  char pattern_name[128]="^[%][\%a-zA-Z0-9]{0,59}$";
+  int status_name=0;
+  status_name=my_match(pattern_name,name);
+  if(status_name==REG_NOMATCH){
+    char Res[256]="<h3>您输入的名字错误，请返回主页面，重新输入6个以内汉字</h3>";
+    RenderHtml(Res);
+    return 1;
+  }
+  fprintf(stderr,"pattern_name OK\n");
+
+  //sex
+  if((strcmp(sex,"\%E5\%A5\%B3")!=0) && (strcmp(sex,"\%E7\%94\%B7")!=0)){
+    char Res[256]="<h3>您输入的性别有误，请返回主页面，重新输入男/女</h3>";
+    RenderHtml(Res);
+    return 1;
+  }
+
+  //number
+  char pattern_number[128]="^1[3578][0-9]{9}$";
+  char number_s[12]={0};
+  int status_number=0;
+  my_lltoa(number_s,number);
+  status_number=my_match(pattern_number,number_s);
+  if(status_number == REG_NOMATCH){
+    char Res[128]="<h3>您输入的手机号码格式错误，请返回主页面，输入正确的中国大陆地区手机号码</h3>";
+    RenderHtml(Res);
+    return 1;
+  }
+
+  /*?id=12344&name=毛&sex=女&number=12345678902&math=99&chinese=99&english=99*/
+  //math
+  if(math<0||math>100){
+    char Res[128]="<h3>您输入的math成绩格式有误，请返回主页，输入正确的0~100内的整数</h3>";
+    RenderHtml(Res);
+    return 1;
+  }
+
+  //chinese
+  if(chinese<0||chinese>100){
+    char Res[128]="<h3>您输入的chinese成绩格式有误，请返回主页，输入正确的0~100内的整数</h3>";
+    RenderHtml(Res);
+    return 1;
+  }
+  
+  //english
+  if(english<0||english>100){
+    char Res[128]="<h3>您输入的english成绩格式有误，请返回主页，输入正确的0~100内的整数</h3>";
+    RenderHtml(Res);
+    return 1;
+  }
+
+  if(status_id != 0 || status_name != 0 || status_number != 0){
+    char Res[128]="<h3>您的输入格式错误，请返回主页重新输入</h3>";
+    RenderHtml(Res);
+    return 1;
+  }
+
+
   //将用户名与密码在数据库中进行查找配对，若成功则进入学生管理系统，若失败则返回失败页面
   //2.连接数据库
   //创建MYSQL句柄
@@ -161,3 +270,4 @@ int main(){
 
 	return 0;
 }
+
