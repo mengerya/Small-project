@@ -2,7 +2,6 @@
 #include<fcntl.h>
 #include<mysql/mysql.h>
 #include"cgi_base.hpp"
-/*192.168.17.129:9090/mysql/mysql/select.html?num=41509030127&password=1272727*/
 
 //写成功的网页
 void RenderHtml(){
