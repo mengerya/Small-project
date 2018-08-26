@@ -47,10 +47,10 @@
           </div>
 
           <div class="inner cover">
-			
-			<form class="form-horizontal" action="mysql">
+		
+			<form class="form-horizontal" action="select">
 				<div class="form-group">
-					<label for="inputnum" class="col-sm-2 control-label">学号</label>
+					<label for="inputnum" class="col-sm-2 control-label">账号</label>
 					<div class="col-sm-10">
 						<input type="num" class="form-control" id="inputnum" placeholder="41509030100" name="num">
 					</div>
@@ -61,22 +61,38 @@
 						<input type="password" class="form-control" id="inputPassword3" placeholder="Password" name="password">
 					</div>
 				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<div class="checkbox">
-							<label>
-								<input type="checkbox"> 记住
-							</label>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button type="submit" class="btn btn-primary">登录</button>
 						</div>
 					</div>
-				</div>
+			</form>   
+			<br>
+			<br>
+			
+			<form class="form-horizontal" action="register/register">
+				
 				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<button type="submit" class="btn btn-primary">登录</button>
+					<label for="inputnum" class="col-sm-2 control-label">账号</label>
+					<div class="col-sm-10">
+						<input type="num" class="form-control" id="inputnum" placeholder="41509030100" name="num">
 					</div>
 				</div>
-			</form>   
+				<div class="form-group">
+					<label for="inputnum" class="col-sm-2 control-label">密码</label>
+					<div class="col-sm-10">
+						<input type="num" class="form-control" id="inputnum" placeholder="Password" name="password">
+					</div>
+				</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button type="submit" class="btn btn-primary">注册</button>
+						</div>
+					</div>
+			</form>
+
           </div>
+		  <!-- Standard button -->
 
           <div class="mastfoot">
             <div class="inner">
@@ -100,3 +116,4 @@
     <script src="assets/js/ie10-viewport-bug-workaround.js"></script>
   </body>
 </html>
+
